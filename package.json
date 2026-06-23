@@ -1,0 +1,37 @@
+{
+	"name": "companion-module-avstumpfl-pixera-ipmi",
+	"version": "1.0.0",
+	"description": "Pixera IPMI power-control module for Bitfocus Companion.",
+	"main": "index.js",
+	"type": "commonjs",
+	"scripts": {
+		"test": "node --test",
+		"test:coverage": "node --test --experimental-test-coverage",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"format": "prettier --write ."
+	},
+	"license": "MIT",
+	"author": "LTT-DEV (https://github.com/ltt-dev)",
+	"contributors": [
+		"Stefan Kowal <157228986+Stefankowal3@users.noreply.github.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ltt-dev/companion-module-avstumpfl-pixera-ipmi.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ltt-dev/companion-module-avstumpfl-pixera-ipmi/issues"
+	},
+	"dependencies": {
+		"@companion-module/base": "~1.14.1"
+	},
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"devDependencies": {
+		"@companion-module/tools": "^2.7.2",
+		"eslint": "^9.39.4",
+		"prettier": "^3.8.4"
+	}
+}

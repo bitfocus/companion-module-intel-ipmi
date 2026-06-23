@@ -1,0 +1,32 @@
+{
+	"$schema": "https://raw.githubusercontent.com/bitfocus/companion-module-base/main/assets/manifest.schema.json",
+	"type": "connection",
+	"id": "avstumpfl-pixera-ipmi",
+	"name": "pixera-ipmi",
+	"shortname": "Pixera IPMI",
+	"description": "Native IPMI v2.0 (RMCP+) power control for AV Stumpfl Pixera media servers.",
+	"version": "1.0.0",
+	"license": "MIT",
+	"repository": "https://github.com/ltt-dev/companion-module-avstumpfl-pixera-ipmi",
+	"bugs": "https://github.com/ltt-dev/companion-module-avstumpfl-pixera-ipmi/issues",
+	"maintainers": [
+		{
+			"name": "LTT-DEV",
+			"github": "ltt-dev"
+		},
+		{
+			"name": "Stefan Kowal",
+			"github": "Stefankowal3"
+		}
+	],
+	"legacyIds": [],
+	"runtime": {
+		"type": "node22",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.0",
+		"entrypoint": "../index.js"
+	},
+	"manufacturer": "AV Stumpfl",
+	"products": ["Pixera IPMI"],
+	"keywords": ["Media Server", "Playback", "IPMI", "Power", "BMC"]
+}
