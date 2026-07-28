@@ -19,12 +19,18 @@ SDR, FRU, user management, etc. are out of scope.
 parallel, independent path. It does not depend on the `avstumpfl-pixera`
 (TCP-API) module.
 
+**Provenance & naming.** The module started life as `avstumpfl-pixera-ipmi`,
+built for AV Stumpfl Pixera media servers. It ships as `intel-ipmi` because
+Companion names modules manufacturer-product and IPMI is an Intel-led
+specification; the old id stays in manifest `legacyIds` so existing connections
+migrate automatically.
+
 ## 2. Layered design
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Companion host (nodejs-ipc)                                   │
-│   index.js → runEntrypoint(IpmiInstance)                      │
+│   src/index.mjs → default-exports IpmiInstance + upgrades     │
 └─────────────────────────────────────────────────────────────┘
                           │
 ┌─────────────────────────────────────────────────────────────┐
@@ -82,7 +88,7 @@ close()
 Every datagram is sent through `_transceive`, which retransmits on timeout
 (`timeoutMs`, `retries`) and rejects with `ETIMEOUT` when the BMC never answers.
 
-## 4. Cryptography (cipher suite 3, the default — also the Pixera factory suite)
+## 4. Cryptography (cipher suite 3, the default)
 
 | Stage                 | Algorithm                            | Where                                    |
 | --------------------- | ------------------------------------ | ---------------------------------------- |
@@ -91,8 +97,9 @@ Every datagram is sent through `_transceive`, which retransmits on timeout
 | Per-packet integrity  | HMAC-SHA1-96 (truncated to 12 bytes) | `crypto.integrityAuthCode`               |
 | Confidentiality       | AES-CBC-128 (random IV, IPMI pad)    | `crypto.encryptPayload`/`decryptPayload` |
 
-Suite 17 (HMAC-SHA256 / HMAC-SHA256-128 / AES-CBC-128) runs through the same code
-paths via the `CIPHER_SUITES` descriptor; suite 0 (no crypto) is also handled.
+Suite 3 is also the factory suite on AV Stumpfl Pixera hardware. Suite 17
+(HMAC-SHA256 / HMAC-SHA256-128 / AES-CBC-128) runs through the same code paths
+via the `CIPHER_SUITES` descriptor; suite 0 (no crypto) is also handled.
 
 The exact HMAC field orders are machine-checked against the IPMI v2.0 spec field
 layout in `test/rakp-conformance.test.js` (with §-references), and validated
@@ -160,11 +167,11 @@ in the connection status (`markBmcError`).
 
 ## 9. Runtime & packaging notes (Companion 4)
 
-- **Target:** `@companion-module/base` **1.14.x** with manifest `runtime.type:
-node22`. This is the combination shipped Companion 4 modules use; `base` 2.x is a
-  future major that removed `runEntrypoint` (default-export entry) and must not be
-  used with this `index.js`. `apiVersion` stays `0.0.0` in source — the build tool
-  populates it with the real `base` version.
+- **Target:** `@companion-module/base` **2.x** with manifest `runtime.type:
+node22` (connection API 2). The entrypoint contract replaced the old
+  `runEntrypoint()` call: `src/index.mjs` default-exports the instance class and
+  name-exports `UpgradeScripts`, and the host imports it. `apiVersion` stays
+  `0.0.0` in source — the build tool populates it with the real `base` version.
 - **No spaces in the project path.** Both `companion-module-build` and the
   Companion _developer modules path_ break on a path containing a space. The
   developer path additionally runs the module under Node's permission model

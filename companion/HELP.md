@@ -5,8 +5,8 @@ external `ipmitool`/`ipmiutil` binaries required. It talks directly to the
 server's BMC over UDP (default port **623**) using a RMCP+ session
 (Open Session → RAKP 1‑4 → encrypted commands → Close Session).
 
-It works with any IPMI 2.0 capable BMC (Supermicro, Intel, ASRock Rack, …) and
-was developed for and validated on **AV Stumpfl Pixera** media servers — see the
+It works with any IPMI 2.0 capable BMC (Supermicro, Intel, ASRock Rack, …).
+Using an **AV Stumpfl Pixera** media server? See the
 [dedicated section below](#av-stumpfl-pixera-servers).
 
 ## Configuration fields
@@ -57,8 +57,12 @@ can't kill a live show.
 
 ## AV Stumpfl Pixera servers
 
-This module was built for Pixera media servers, and the defaults above are the
-Pixera factory values. It controls server _power_ only and is independent of the
+This module was built for — and validated end to end on — Pixera media servers,
+and the defaults above are the Pixera factory values. It is listed under Intel
+because Companion names modules manufacturer-product and IPMI is an Intel-led
+specification.
+
+It controls server _power_ only and is independent of the
 **AV Stumpfl: Pixera** connection, which controls the Pixera application over
 its TCP API — use both side by side when you need application control and power
 control.
