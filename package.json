@@ -2,14 +2,15 @@
 	"name": "companion-module-intel-ipmi",
 	"version": "1.0.0",
 	"description": "Native IPMI v2.0 (RMCP+) power-control module for Bitfocus Companion.",
-	"main": "index.js",
+	"main": "src/index.mjs",
 	"type": "commonjs",
 	"scripts": {
 		"test": "node --test",
 		"test:coverage": "node --test --experimental-test-coverage",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"format": "prettier --write ."
+		"format": "prettier -w .",
+		"package": "companion-module-build"
 	},
 	"license": "MIT",
 	"author": "LTT-DEV (https://github.com/ltt-dev)",
@@ -24,14 +25,17 @@
 		"url": "https://github.com/bitfocus/companion-module-intel-ipmi/issues"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.14.1"
+		"@companion-module/base": "~2.0.4"
 	},
 	"engines": {
-		"node": ">=20.0.0"
+		"node": ">=22.20",
+		"yarn": "^4"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^2.7.2",
+		"@companion-module/tools": "^3.0.1",
 		"eslint": "^9.39.4",
 		"prettier": "^3.8.4"
-	}
+	},
+	"prettier": "@companion-module/tools/.prettierrc.json",
+	"packageManager": "yarn@4.17.0"
 }

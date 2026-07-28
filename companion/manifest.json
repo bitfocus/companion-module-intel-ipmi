@@ -1,5 +1,5 @@
 {
-	"$schema": "https://raw.githubusercontent.com/bitfocus/companion-module-base/main/assets/manifest.schema.json",
+	"$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
 	"type": "connection",
 	"id": "intel-ipmi",
 	"name": "intel-ipmi",
@@ -7,7 +7,7 @@
 	"description": "Native IPMI v2.0 (RMCP+) power control for servers with a BMC. Validated on AV Stumpfl Pixera media servers.",
 	"version": "1.0.0",
 	"license": "MIT",
-	"repository": "https://github.com/bitfocus/companion-module-intel-ipmi",
+	"repository": "git+https://github.com/bitfocus/companion-module-intel-ipmi.git",
 	"bugs": "https://github.com/bitfocus/companion-module-intel-ipmi/issues",
 	"maintainers": [
 		{
@@ -24,7 +24,7 @@
 		"type": "node22",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
-		"entrypoint": "../index.js"
+		"entrypoint": "../src/index.mjs"
 	},
 	"manufacturer": "Intel",
 	"products": ["IPMI"],

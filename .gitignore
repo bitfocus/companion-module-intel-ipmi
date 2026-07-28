@@ -1,4 +1,6 @@
 node_modules/
+package-lock.json
+/.yarn
 *.log
 .DS_Store
 pkg/
@@ -6,3 +8,4 @@ dist/
 coverage/
 *.tgz
 *.zip
+DEBUG-*
