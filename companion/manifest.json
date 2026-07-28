@@ -5,7 +5,7 @@
 	"name": "intel-ipmi",
 	"shortname": "IPMI",
 	"description": "Native IPMI v2.0 (RMCP+) power control for servers with a BMC. Validated on AV Stumpfl Pixera media servers.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-intel-ipmi.git",
 	"bugs": "https://github.com/bitfocus/companion-module-intel-ipmi/issues",
