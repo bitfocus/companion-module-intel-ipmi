@@ -7,7 +7,7 @@ const { getActionDefinitions } = require('../src/actions')
 const { getFeedbackDefinitions } = require('../src/feedbacks')
 const { getPresetDefinitions } = require('../src/presets')
 const { getVariableDefinitions } = require('../src/variables')
-const { PixeraIpmiInstance } = require('../src/main')
+const { IpmiInstance } = require('../src/main')
 const { POWER } = require('../src/ipmi/controller')
 
 function byId(fields) {
@@ -109,7 +109,7 @@ test('variables declare power state and reachability', () => {
 })
 
 test('getSessionConfig derives the password from LAN1 when password is blank', () => {
-	const cfg = PixeraIpmiInstance.prototype.getSessionConfig.call({
+	const cfg = IpmiInstance.prototype.getSessionConfig.call({
 		config: { bmcHost: '10.41.98.252', lan1Ip: '10.31.98.252', ipmiPass: '' },
 	})
 	assert.equal(cfg.password, 'Px010031098252')
@@ -118,7 +118,7 @@ test('getSessionConfig derives the password from LAN1 when password is blank', (
 })
 
 test('getSessionConfig prefers an explicit password over LAN1 derivation', () => {
-	const cfg = PixeraIpmiInstance.prototype.getSessionConfig.call({
+	const cfg = IpmiInstance.prototype.getSessionConfig.call({
 		config: { bmcHost: '10.41.98.252', lan1Ip: '10.31.98.252', ipmiPass: 'CustomSecret' },
 	})
 	assert.equal(cfg.password, 'CustomSecret')

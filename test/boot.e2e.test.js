@@ -4,7 +4,7 @@
  * test/boot.e2e.test.js
  *
  * Instance-level end-to-end test: drives the REAL module instance
- * (PixeraIpmiInstance, src/main.js) through its real lifecycle methods
+ * (IpmiInstance, src/main.js) through its real lifecycle methods
  * (init / configUpdated / refreshPowerState / action callbacks / destroy),
  * wired to the REAL IpmiController talking to the in-process MockBmc.
  *
@@ -24,14 +24,14 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { InstanceStatus } = require('@companion-module/base')
 const { MockBmc } = require('./mock-bmc')
-const { PixeraIpmiInstance } = require('../src/main')
+const { IpmiInstance } = require('../src/main')
 
 const USER = 'ADMIN'
 const PASS = 'Px010031098252'
 
-/** Build a PixeraIpmiInstance whose IPC-backed methods are captured, not sent. */
+/** Build a IpmiInstance whose IPC-backed methods are captured, not sent. */
 function makeHarness() {
-	const h = Object.create(PixeraIpmiInstance.prototype)
+	const h = Object.create(IpmiInstance.prototype)
 	h._cap = { vars: {}, statuses: [], feedbackChecks: [], actions: null, feedbacks: null }
 	h.log = () => {}
 	h.updateStatus = (status, message) => h._cap.statuses.push({ status, message })

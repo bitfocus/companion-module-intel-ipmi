@@ -1,13 +1,14 @@
-# Architecture — Pixera IPMI Power Control
+# Architecture — Intel IPMI Power Control
 
-This document describes how the AV Stumpfl Pixera IPMI power-control module is
-built. It is written for developers who will maintain the `pixera-ipmi` codebase.
+This document describes how the Intel IPMI power-control module is built. It is
+written for developers who will maintain the `intel-ipmi` codebase.
 
 ## 1. Goals & non-goals
 
 **Goal.** Provide server power control (on / off / cycle / reset / soft-shutdown /
-graceful restart) for AV Stumpfl Pixera systems, talking directly to the server's
-BMC over **IPMI v2.0 (RMCP+)**, with **no external binaries**
+graceful restart) for servers with an IPMI v2.0 BMC — developed for and validated
+on AV Stumpfl Pixera systems — talking directly to the BMC over
+**IPMI v2.0 (RMCP+)**, with **no external binaries**
 (`ipmitool`/`ipmiutil`) and no native add-ons — pure Node `dgram` + `crypto`.
 
 **Non-goals.** This is not a general IPMI library. The scope is deliberately
@@ -15,20 +16,21 @@ narrow: one authenticated session plus two Chassis commands. Sensor reading, SOL
 SDR, FRU, user management, etc. are out of scope.
 
 **Separation rule.** The IPMI code lives entirely under `src/ipmi/` and is a
-parallel, independent path. It does not depend on the Pixera TCP-API module.
+parallel, independent path. It does not depend on the `avstumpfl-pixera`
+(TCP-API) module.
 
 ## 2. Layered design
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Companion host (nodejs-ipc)                                   │
-│   index.js → runEntrypoint(PixeraIpmiInstance)                │
+│   index.js → runEntrypoint(IpmiInstance)                      │
 └─────────────────────────────────────────────────────────────┘
                           │
 ┌─────────────────────────────────────────────────────────────┐
 │ Companion glue (src/)                                         │
 │   main.js        InstanceBase lifecycle, polling, status      │
-│   config.js      connection fields (Pixera defaults)          │
+│   config.js      connection fields (Pixera-friendly defaults) │
 │   actions.js     7 power actions                              │
 │   feedbacks.js   power_state (color) + power_is_on (boolean)  │
 │   variables.js   ipmi_power_state, ipmi_reachable             │
@@ -80,7 +82,7 @@ close()
 Every datagram is sent through `_transceive`, which retransmits on timeout
 (`timeoutMs`, `retries`) and rejects with `ETIMEOUT` when the BMC never answers.
 
-## 4. Cryptography (cipher suite 3, the Pixera default)
+## 4. Cryptography (cipher suite 3, the default — also the Pixera factory suite)
 
 | Stage                 | Algorithm                            | Where                                    |
 | --------------------- | ------------------------------------ | ---------------------------------------- |
@@ -168,4 +170,4 @@ node22`. This is the combination shipped Companion 4 modules use; `base` 2.x is 
   developer path additionally runs the module under Node's permission model
   (`--allow-fs-read=<module dir>`), so the module must be a real directory inside
   that path — a symlink pointing elsewhere is denied. Keep the project at e.g.
-  `~/companion-dev-modules/avstumpfl-pixera-ipmi`.
+  `~/companion-dev-modules/companion-module-intel-ipmi`.

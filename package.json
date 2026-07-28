@@ -1,7 +1,7 @@
 {
-	"name": "companion-module-avstumpfl-pixera-ipmi",
+	"name": "companion-module-intel-ipmi",
 	"version": "1.0.0",
-	"description": "Pixera IPMI power-control module for Bitfocus Companion.",
+	"description": "Native IPMI v2.0 (RMCP+) power-control module for Bitfocus Companion.",
 	"main": "index.js",
 	"type": "commonjs",
 	"scripts": {
@@ -18,10 +18,10 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ltt-dev/companion-module-avstumpfl-pixera-ipmi.git"
+		"url": "git+https://github.com/bitfocus/companion-module-intel-ipmi.git"
 	},
 	"bugs": {
-		"url": "https://github.com/ltt-dev/companion-module-avstumpfl-pixera-ipmi/issues"
+		"url": "https://github.com/bitfocus/companion-module-intel-ipmi/issues"
 	},
 	"dependencies": {
 		"@companion-module/base": "~1.14.1"

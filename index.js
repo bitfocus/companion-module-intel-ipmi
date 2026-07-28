@@ -7,6 +7,6 @@
  */
 
 const { runEntrypoint } = require('@companion-module/base')
-const { PixeraIpmiInstance } = require('./src/main')
+const { IpmiInstance } = require('./src/main')
 
-runEntrypoint(PixeraIpmiInstance, [])
+runEntrypoint(IpmiInstance, [])

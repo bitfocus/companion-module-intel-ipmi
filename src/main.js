@@ -3,9 +3,9 @@
 /**
  * src/main.js
  *
- * Companion InstanceBase for the AV Stumpfl Pixera IPMI power-control module.
- * The Pixera TCP-API module remains separate; this connection owns only BMC
- * power control.
+ * Companion InstanceBase for the Intel IPMI power-control module. Talks to any
+ * IPMI v2.0 (RMCP+) BMC; ships a factory-password convenience for AV Stumpfl
+ * Pixera media servers (see src/ipmi/password.js).
  */
 
 const { InstanceBase, InstanceStatus } = require('@companion-module/base')
@@ -17,7 +17,7 @@ const { getPresetDefinitions } = require('./presets')
 const { IpmiController } = require('./ipmi/controller')
 const { derivePixeraPassword } = require('./ipmi/password')
 
-class PixeraIpmiInstance extends InstanceBase {
+class IpmiInstance extends InstanceBase {
 	async init(config) {
 		this.config = config || {}
 		this.state = { reachable: false, powerOn: null }
@@ -135,4 +135,4 @@ class PixeraIpmiInstance extends InstanceBase {
 	}
 }
 
-module.exports = { PixeraIpmiInstance }
+module.exports = { IpmiInstance }

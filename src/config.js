@@ -3,12 +3,10 @@
 /**
  * src/config.js
  *
- * Connection configuration fields for the AV Stumpfl Pixera IPMI module. The
- * official Pixera TCP-API module stays separate; this module exposes only BMC
- * power-control settings.
- *
- * Every value below is a Pixera factory default but stays user-editable, per
- * the project rule "what is standard in Pixera is the default, but changeable".
+ * Connection configuration fields for the Intel IPMI module. The defaults
+ * match common BMC factory settings — they are also the AV Stumpfl Pixera
+ * factory values, the hardware this module was validated on — and every value
+ * stays user-editable.
  */
 
 function getConfigFields() {
@@ -19,7 +17,7 @@ function getConfigFields() {
 			width: 12,
 			label: 'IPMI / BMC Power Control',
 			value:
-				'Control Pixera server power over native IPMI v2.0 (RMCP+). Use a dedicated, isolated management VLAN — never expose IPMI publicly.',
+				'Control server power over native IPMI v2.0 (RMCP+) — works with any IPMI 2.0 capable BMC. Use a dedicated, isolated management VLAN — never expose IPMI publicly.',
 		},
 		{
 			type: 'textinput',
@@ -31,7 +29,8 @@ function getConfigFields() {
 			// Companion refuse to save the field, leaving the module with no host.
 			// The value is trimmed in main.js and the session layer reports a clear
 			// timeout if the address is unreachable.
-			tooltip: 'IP or hostname of the BMC (Pixera factory pool 10.41.x.x). No port here — set it in BMC Port.',
+			tooltip:
+				'IP or hostname of the BMC. No port here — set it in BMC Port. (AV Stumpfl Pixera factory pool: 10.41.x.x)',
 		},
 		{
 			type: 'number',
@@ -47,7 +46,7 @@ function getConfigFields() {
 			id: 'ipmiUser',
 			label: 'IPMI Username',
 			width: 6,
-			default: 'ADMIN', // Pixera factory user
+			default: 'ADMIN', // common BMC factory user (also the Pixera factory user)
 		},
 		{
 			type: 'textinput',
@@ -55,17 +54,26 @@ function getConfigFields() {
 			label: 'IPMI Password',
 			width: 6,
 			default: '',
-			tooltip: 'Factory default: Px + LAN1 sticker IP (10.31.x.x) zero-padded, e.g. Px010031098252',
+			tooltip:
+				'BMC account password. AV Stumpfl Pixera factory default: Px + LAN1 sticker IP (10.31.x.x) zero-padded, e.g. Px010031098252 — or use the Pixera field below.',
+		},
+		{
+			type: 'static-text',
+			id: 'pixera-info',
+			width: 12,
+			label: 'AV Stumpfl Pixera servers',
+			value:
+				'Pixera convenience: leave the password blank and enter the LAN1 sticker address below — the module derives the factory IPMI password for you.',
 		},
 		{
 			type: 'textinput',
 			id: 'lan1Ip',
-			label: 'LAN1 sticker IP (optional — auto-derives password if password left blank)',
+			label: 'Pixera LAN1 sticker IP (auto-derives factory password if password left blank)',
 			width: 6,
 			default: '',
 			// No regex: derivePixeraPassword() validates/trims this itself.
 			tooltip:
-				'Original factory LAN1 address from the sticker (pool 10.31.x.x). Used only to rebuild the default password.',
+				'Original factory LAN1 address from the Pixera sticker (pool 10.31.x.x). Used only to rebuild the factory password.',
 		},
 		{
 			type: 'dropdown',
@@ -73,9 +81,10 @@ function getConfigFields() {
 			label: 'Cipher Suite',
 			width: 3,
 			default: 3,
+			tooltip: 'Suite 3 is the most common BMC factory default (incl. AV Stumpfl Pixera).',
 			choices: [
 				{ id: 0, label: '0 (none)' },
-				{ id: 3, label: '3 (SHA1 / AES-128) — Pixera' },
+				{ id: 3, label: '3 (SHA1 / AES-128)' },
 				{ id: 17, label: '17 (SHA256 / AES-128)' },
 			],
 		},
