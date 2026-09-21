@@ -63,12 +63,14 @@ test('boot: init resolves real power state through a real session (power ON)', a
 	await bmc.start()
 	const h = makeHarness()
 	try {
-		await h.init(fastConfig(bmc))
+		await h.init(fastConfig(bmc, { bmcHost: ' 127.0.0.1 ' }))
 		await h.refreshPowerState()
 		assert.equal(h._cap.vars.ipmi_reachable, 'true')
 		assert.equal(h._cap.vars.ipmi_power_state, 'on')
 		assert.equal(h.state.powerOn, true)
-		assert.ok(h._cap.feedbackChecks.includes('power_state'))
+		for (const feedbackId of ['power_is_on', 'power_is_off', 'power_is_unknown']) {
+			assert.ok(h._cap.feedbackChecks.includes(feedbackId), `${feedbackId} is refreshed`)
+		}
 		// Status reflects a reachable BMC.
 		assert.equal(h._cap.statuses.at(-1).status, InstanceStatus.Ok)
 	} finally {
@@ -138,6 +140,31 @@ test('boot: destroy() clears the poll timer (no leaked interval)', async () => {
 		await h.destroy()
 		assert.equal(h._pollTimer, null, 'destroy must clear the timer')
 	} finally {
+		await bmc.stop()
+	}
+})
+
+test('boot: config updates normalize the BMC host and stop polling when it is cleared', async () => {
+	const bmc = new MockBmc({ username: USER, password: PASS, powerOn: true })
+	await bmc.start()
+	const h = makeHarness()
+	try {
+		await h.init({})
+		const config = fastConfig(bmc, { bmcHost: ' \t127.0.0.1\n', pollEnabled: true, pollInterval: 3600 })
+		await h.configUpdated(config)
+		await h.refreshPowerState()
+		assert.equal(h._cap.vars.ipmi_power_state, 'on')
+		assert.equal(h._cap.statuses.at(-1).status, InstanceStatus.Ok)
+		assert.ok(h._pollTimer)
+		assert.equal(config.bmcHost, ' \t127.0.0.1\n', 'the supplied config is not mutated')
+
+		h.ipmi.getStatus = () => assert.fail('a blank BMC host must not trigger a status request')
+		await h.configUpdated({ ...config, bmcHost: ' \t\n ' })
+		await h.refreshPowerState()
+		assert.equal(h._cap.statuses.at(-1).status, InstanceStatus.BadConfig)
+		assert.equal(h._pollTimer, null)
+	} finally {
+		await h.destroy()
 		await bmc.stop()
 	}
 })

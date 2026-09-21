@@ -16,15 +16,17 @@ const GREEN = combineRgb(0, 153, 51)
 const ORANGE = combineRgb(204, 102, 0)
 const BLUE = combineRgb(0, 80, 160)
 const RED = combineRgb(153, 0, 0)
+const YELLOW = combineRgb(204, 153, 0)
 const GREY = combineRgb(40, 40, 40)
 
 function getPresetDefinitions() {
 	const category = 'IPMI Power'
 
-	const powerStateFeedback = {
-		feedbackId: 'power_state',
-		options: { onColor: GREEN, offColor: RED, unknownColor: combineRgb(204, 153, 0), fgColor: WHITE },
-	}
+	const powerStateFeedbacks = [
+		{ feedbackId: 'power_is_on', options: {}, style: { bgcolor: GREEN, color: WHITE } },
+		{ feedbackId: 'power_is_off', options: {}, style: { bgcolor: RED, color: WHITE } },
+		{ feedbackId: 'power_is_unknown', options: {}, style: { bgcolor: YELLOW, color: WHITE } },
+	]
 
 	return {
 		ipmi_power_on: {
@@ -33,7 +35,7 @@ function getPresetDefinitions() {
 			name: 'Power On',
 			style: { text: 'PWR\\nON', size: '18', color: WHITE, bgcolor: GREY },
 			steps: [{ down: [{ actionId: 'ipmi_power_on', options: {} }], up: [] }],
-			feedbacks: [powerStateFeedback],
+			feedbacks: powerStateFeedbacks,
 		},
 		ipmi_soft_shutdown: {
 			type: 'button',
@@ -67,7 +69,7 @@ function getPresetDefinitions() {
 			name: 'Power Down (hard, hold)',
 			style: { text: 'PWR\\nDOWN', size: '18', color: WHITE, bgcolor: BLACK },
 			steps: [{ down: [], up: [{ actionId: 'ipmi_power_down', options: {} }] }],
-			feedbacks: [powerStateFeedback],
+			feedbacks: powerStateFeedbacks,
 		},
 	}
 }

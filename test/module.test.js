@@ -75,16 +75,54 @@ test('action failure is logged and marks a BMC error (no throw to Companion)', a
 	assert.deepEqual(calls, [['error', 'boom']])
 })
 
-test('power_state feedback colors by state', () => {
-	const self = { state: { reachable: true, powerOn: true } }
-	const opts = { onColor: 1, offColor: 2, unknownColor: 3, fgColor: 9 }
-	const fb = getFeedbackDefinitions(self).power_state
+test('boolean power feedbacks select exactly one state, including unknown and stale readings', () => {
+	const self = { state: {} }
+	const feedbacks = getFeedbackDefinitions(self)
+	assert.deepEqual(Object.keys(feedbacks), ['power_is_on', 'power_is_off', 'power_is_unknown'])
+	for (const feedback of Object.values(feedbacks)) {
+		assert.equal(feedback.type, 'boolean')
+		assert.deepEqual(feedback.options, [])
+	}
 
-	assert.deepEqual(fb.callback({ options: opts }), { bgcolor: 1, color: 9 })
-	self.state.powerOn = false
-	assert.deepEqual(fb.callback({ options: opts }), { bgcolor: 2, color: 9 })
-	self.state.reachable = false
-	assert.deepEqual(fb.callback({ options: opts }), { bgcolor: 3, color: 9 })
+	const cases = [
+		[{ reachable: true, powerOn: true }, 'power_is_on'],
+		[{ reachable: true, powerOn: false }, 'power_is_off'],
+		[{ reachable: true, powerOn: null }, 'power_is_unknown'],
+		[{ reachable: true }, 'power_is_unknown'],
+		[{ reachable: true, powerOn: 'on' }, 'power_is_unknown'],
+		[{ reachable: false, powerOn: true }, 'power_is_unknown'],
+		[{ reachable: false, powerOn: false }, 'power_is_unknown'],
+		[{ reachable: false, powerOn: null }, 'power_is_unknown'],
+		[{}, 'power_is_unknown'],
+	]
+	for (const [state, expected] of cases) {
+		self.state = state
+		for (const [id, feedback] of Object.entries(feedbacks)) {
+			assert.equal(feedback.callback(), id === expected, `${JSON.stringify(state)}: ${id}`)
+		}
+	}
+})
+
+test('power presets retain green, red and yellow styling through boolean feedbacks', () => {
+	const self = { state: {} }
+	const feedbacks = getFeedbackDefinitions(self)
+	const presets = getPresetDefinitions()
+	const cases = [
+		[{ reachable: true, powerOn: true }, 0x009933],
+		[{ reachable: true, powerOn: false }, 0x990000],
+		[{ reachable: true, powerOn: null }, 0xcc9900],
+		[{ reachable: false, powerOn: true }, 0xcc9900],
+	]
+	for (const presetId of ['ipmi_power_on', 'ipmi_power_down']) {
+		const preset = presets[presetId]
+		for (const [state, bgcolor] of cases) {
+			self.state = state
+			const active = preset.feedbacks.filter((fb) => feedbacks[fb.feedbackId].callback())
+			assert.equal(active.length, 1, `${presetId}: ${JSON.stringify(state)}`)
+			assert.deepEqual(active[0].style, { bgcolor, color: 0xffffff })
+			assert.deepEqual(feedbacks[active[0].feedbackId].defaultStyle, active[0].style)
+		}
+	}
 })
 
 test('presets only reference defined actions and feedbacks', () => {

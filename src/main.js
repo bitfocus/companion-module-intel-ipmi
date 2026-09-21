@@ -17,9 +17,13 @@ const { getPresetDefinitions } = require('./presets')
 const { IpmiController } = require('./ipmi/controller')
 const { derivePixeraPassword } = require('./ipmi/password')
 
+function normalizeConfig(config) {
+	return { ...config, bmcHost: (config?.bmcHost || '').trim() }
+}
+
 class IpmiInstance extends InstanceBase {
 	async init(config) {
-		this.config = config || {}
+		this.config = normalizeConfig(config)
 		this.state = { reachable: false, powerOn: null }
 		this._pollTimer = null
 
@@ -36,7 +40,7 @@ class IpmiInstance extends InstanceBase {
 
 		this.setVariableValues({ ipmi_power_state: 'unknown', ipmi_reachable: 'false' })
 
-		if (!(this.config.bmcHost || '').trim()) {
+		if (!this.config.bmcHost) {
 			this.updateStatus(InstanceStatus.BadConfig, 'No BMC host configured')
 		} else {
 			this.updateStatus(InstanceStatus.Connecting)
@@ -46,9 +50,9 @@ class IpmiInstance extends InstanceBase {
 	}
 
 	async configUpdated(config) {
-		this.config = config || {}
+		this.config = normalizeConfig(config)
 		this.startPolling()
-		if (!(this.config.bmcHost || '').trim()) {
+		if (!this.config.bmcHost) {
 			this.updateStatus(InstanceStatus.BadConfig, 'No BMC host configured')
 		} else {
 			this.refreshPowerState()
@@ -78,7 +82,7 @@ class IpmiInstance extends InstanceBase {
 			}
 		}
 		return {
-			host: (c.bmcHost || '').trim(),
+			host: c.bmcHost || '',
 			port: c.bmcPort || 623,
 			username: c.ipmiUser || 'ADMIN',
 			password,
@@ -91,7 +95,7 @@ class IpmiInstance extends InstanceBase {
 	// ---- polling / state ------------------------------------------------
 	startPolling() {
 		this.stopPolling()
-		if (!(this.config.bmcHost || '').trim()) return
+		if (!this.config.bmcHost) return
 		if (this.config.pollEnabled === false) {
 			// One-off read so feedback isn't stuck at unknown.
 			this.refreshPowerState()
@@ -111,7 +115,7 @@ class IpmiInstance extends InstanceBase {
 
 	/** Read power state once and push it to variables/feedbacks/status. */
 	async refreshPowerState() {
-		if (!(this.config.bmcHost || '').trim()) return
+		if (!this.config.bmcHost) return
 		const status = await this.ipmi.getStatus()
 		this.state.reachable = status.reachable
 		this.state.powerOn = status.powerOn
@@ -120,7 +124,7 @@ class IpmiInstance extends InstanceBase {
 			ipmi_reachable: status.reachable ? 'true' : 'false',
 			ipmi_power_state: !status.reachable ? 'unknown' : status.powerOn ? 'on' : 'off',
 		})
-		this.checkFeedbacks('power_state', 'power_is_on')
+		this.checkFeedbacks('power_is_on', 'power_is_off', 'power_is_unknown')
 
 		if (!status.reachable) {
 			this.updateStatus(InstanceStatus.ConnectionFailure, 'BMC unreachable')

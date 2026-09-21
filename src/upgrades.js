@@ -4,8 +4,8 @@
  * src/upgrades.js
  *
  * Config/action/feedback upgrade scripts, run by Companion when a user
- * updates from an older module version (including connections migrated
- * from the legacy `avstumpfl-pixera-ipmi` id via manifest legacyIds).
+ * updates from an older module version. No upgrades are needed for the
+ * first release.
  * Once a script has shipped it must never be removed.
  */
 

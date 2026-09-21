@@ -36,8 +36,7 @@ sticker address for you.
 
 It controls server _power_ only. To control the Pixera _application_ (timelines,
 layers, etc.) use the separate `avstumpfl-pixera` connection — the two work side
-by side. Users who imported the earlier `avstumpfl-pixera-ipmi` package have
-their connections migrated automatically (`legacyIds`).
+by side.
 
 The module is named `intel-ipmi` because Companion names modules
 manufacturer-product and IPMI is an Intel-led specification; the module itself
@@ -108,8 +107,7 @@ LAN1 za Ciebie.
 
 Steruje wyłącznie _zasilaniem_ serwera. Do sterowania _aplikacją_ Pixera (osie
 czasu, warstwy itd.) służy osobne połączenie `avstumpfl-pixera` — oba działają
-równolegle. Użytkownikom, którzy zaimportowali wcześniejszą paczkę
-`avstumpfl-pixera-ipmi`, połączenia migrują się automatycznie (`legacyIds`).
+równolegle.
 
 Moduł nazywa się `intel-ipmi`, bo Companion nazywa moduły według schematu
 producent-produkt, a IPMI to specyfikacja rozwijana pod przewodnictwem Intela;

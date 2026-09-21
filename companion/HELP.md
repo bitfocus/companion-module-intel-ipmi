@@ -42,8 +42,12 @@ Using an **AV Stumpfl Pixera** media server? See the
 
 ## Feedback & variables
 
-- Feedback **Power state color** — green = on, red = off, yellow = unreachable.
-- Feedback **Power is ON** — boolean.
+- Feedback **Power is ON** — boolean, green by default.
+- Feedback **Power is OFF** — boolean, red by default.
+- Feedback **Power state is unknown** — boolean, yellow by default; active when
+  the BMC is unreachable or the power state is unknown.
+- Combine these feedbacks on one button for all three states. Their styles are
+  editable in Companion; the power presets already include them.
 - `$(intel-ipmi:ipmi_power_state)` — `on` / `off` / `unknown`
 - `$(intel-ipmi:ipmi_reachable)` — `true` / `false`
 

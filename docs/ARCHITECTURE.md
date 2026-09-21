@@ -22,8 +22,7 @@ parallel, independent path. It does not depend on the `avstumpfl-pixera`
 **Provenance & naming.** The module started life as `avstumpfl-pixera-ipmi`,
 built for AV Stumpfl Pixera media servers. It ships as `intel-ipmi` because
 Companion names modules manufacturer-product and IPMI is an Intel-led
-specification; the old id stays in manifest `legacyIds` so existing connections
-migrate automatically.
+specification. This is the first release, so manifest `legacyIds` is empty.
 
 ## 2. Layered design
 
@@ -38,7 +37,7 @@ migrate automatically.
 │   main.js        InstanceBase lifecycle, polling, status      │
 │   config.js      connection fields (Pixera-friendly defaults) │
 │   actions.js     7 power actions                              │
-│   feedbacks.js   power_state (color) + power_is_on (boolean)  │
+│   feedbacks.js   boolean power on / off / unknown feedbacks │
 │   variables.js   ipmi_power_state, ipmi_reachable             │
 │   presets.js     ready-to-drag, guarded buttons               │
 └─────────────────────────────────────────────────────────────┘
@@ -128,7 +127,7 @@ polls it on an interval (`setInterval` in `init`, cleared in `destroy`) and
 pushes the result to:
 
 - variables `ipmi_power_state` (`on`/`off`/`unknown`) and `ipmi_reachable`,
-- feedbacks `power_state` (color) and `power_is_on` (boolean),
+- boolean feedbacks `power_is_on`, `power_is_off` and `power_is_unknown`,
 - the Companion connection status (`Ok` / `ConnectionFailure`).
 
 ## 7. Error handling
