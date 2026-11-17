@@ -141,9 +141,10 @@ test('presets only reference defined actions and feedbacks', () => {
 })
 
 test('variables declare power state and reachability', () => {
-	const ids = getVariableDefinitions().map((v) => v.variableId)
-	assert.ok(ids.includes('ipmi_power_state'))
-	assert.ok(ids.includes('ipmi_reachable'))
+	assert.deepEqual(getVariableDefinitions(), {
+		ipmi_power_state: { name: 'IPMI power state (on/off/unknown)' },
+		ipmi_reachable: { name: 'IPMI BMC reachable (true/false)' },
+	})
 })
 
 test('getSessionConfig derives the password from LAN1 when password is blank', () => {
