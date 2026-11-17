@@ -8,10 +8,10 @@
  */
 
 function getVariableDefinitions() {
-	return [
-		{ variableId: 'ipmi_power_state', name: 'IPMI power state (on/off/unknown)' },
-		{ variableId: 'ipmi_reachable', name: 'IPMI BMC reachable (true/false)' },
-	]
+	return {
+		ipmi_power_state: { name: 'IPMI power state (on/off/unknown)' },
+		ipmi_reachable: { name: 'IPMI BMC reachable (true/false)' },
+	}
 }
 
 module.exports = { getVariableDefinitions }

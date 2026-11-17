@@ -64,6 +64,10 @@ test('boot: init resolves real power state through a real session (power ON)', a
 	const h = makeHarness()
 	try {
 		await h.init(fastConfig(bmc, { bmcHost: ' 127.0.0.1 ' }))
+		assert.deepEqual(h._cap.varDefs, {
+			ipmi_power_state: { name: 'IPMI power state (on/off/unknown)' },
+			ipmi_reachable: { name: 'IPMI BMC reachable (true/false)' },
+		})
 		await h.refreshPowerState()
 		assert.equal(h._cap.vars.ipmi_reachable, 'true')
 		assert.equal(h._cap.vars.ipmi_power_state, 'on')
